@@ -6,8 +6,15 @@ const PORT = 8080; // default port 8080
 app.set('view engine', 'ejs')
 app.use(morgan('dev'))
 app.use(express.urlencoded({extended: false}))
-function generateRandomString() {
-
+function generateRandomString(string) {
+    let result = "";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const characterLength = 6;
+    for (let i = 0; i <= characterLength; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characterLength));
+    }
+    return result.toLocaleLowerCase();
 }
 
 const urlDatabase = {
@@ -34,6 +41,14 @@ app.get("/hello", (req, res) => {
   app.get("/urls/new", (req, res) => {
     res.render("urls_new");
   });
+  // to redirect to the website
+  app.get("/u/:shortURL", (req, res) => {
+    // const longURL = ...
+    const shortURL = req.params.shortURL
+    const longURL = urlDatabase[shortURL]
+    console.log("long:",longURL)
+    res.redirect(longURL);
+  });
   //single url
   app.get("/urls/:shortURL", (req, res) => {
       const shortURL = req.params.shortURL
@@ -43,8 +58,12 @@ app.get("/hello", (req, res) => {
   });
   //APP.POST for newURLS
   app.post("/urls", (req, res) => {
-    console.log(req.body);  // Log the POST request body to the console
-    res.send("Ok");         // Respond with 'Ok' (we will replace this)
+      shortURL = generateRandomString()
+      longURL = req.body["longURL"]
+    console.log("LONGURL:",longURL)
+    console.log("RANDOM:",shortURL);  // Log the POST request body to the console
+    urlDatabase[shortURL] =  longURL
+    return res.redirect("/urls");         // Respond with 'Ok' (we will replace this)
   });
   
   
