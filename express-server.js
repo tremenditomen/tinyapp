@@ -65,6 +65,13 @@ app.get("/hello", (req, res) => {
     urlDatabase[shortURL] =  longURL
     return res.redirect("/urls");         // Respond with 'Ok' (we will replace this)
   });
+  //DELETING URLS
+  app.post("/urls/:shortURL/delete", (req,res)=>{
+      const url = req.params.shortURL
+      delete urlDatabase[url]
+      res.redirect("/urls")
+
+  })
   
   
 
