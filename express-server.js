@@ -238,14 +238,15 @@ app.get("/hello", (req, res) => {
       return res.status(400).send('Bad email or password')
     }
     for(let user in users){
-      if(users[user] === email){
+      console.log("USERS:",users[user])
+      if(users[user].email === email){
         
-        return res.status(400).send('email already exists')
+        return res.status(400).send('Email already exists')
     }
     }
-    if(email===getUserByEmail(email,users)){
-      res.send("Account already exists")
-    }
+    // if(email===getUserByEmail(email,users)){
+    //   res.send("Account already exists")
+    // }
     users[user] = {
       id: user,
       email: req.body.email,
