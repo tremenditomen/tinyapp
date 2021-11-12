@@ -56,7 +56,7 @@ const urlDatabase = {
 // }
 //Email helper V2
 
-const getUserByEmail = function (email, users) {
+const getUserByEmail = function (email, usersDB) {
   let foundUser = null;
   for (user in users) {
     if (users[user].email === email) {
@@ -110,13 +110,15 @@ app.get("/hello", (req, res) => {
   })
   //APP.GET FOR THE FORM
   app.get("/urls/new", (req, res) => {
-    const templateVars = { user: req.cookies.user_id };
-    if (!templateVars["user"]) {
-      return res.redirect("/login");
-    } else {
-      res.render("urls_new", templateVars);
-    }
-  });
+    const userid = req.cookies["user_id"];
+    const user = users[userid];
+    const templateVars = { user: user };
+  if (!templateVars["user"]) {
+    return res.redirect("/login");
+  } else {
+    res.render("urls_new", templateVars);
+  }
+});
   //REGISTER GET ROUT
   app.get("/register", (req,res)=>{
     const userid = req.cookies["user_id"];
@@ -191,10 +193,10 @@ app.get("/hello", (req, res) => {
   });
   //DELETING URLS
   app.post("/urls/:shortURL/delete", (req,res)=>{
-      const shortUrl = req.params.shortURL
-      const longURL = req.body.longURL;
-      urlDatabase[shortURL]["longURL"] = longURL;
-     return  res.redirect("/urls")
+    const shortURL = req.params.shortURL;
+
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
 
   })
   // EDITING URLS
@@ -240,6 +242,9 @@ app.get("/hello", (req, res) => {
         
         return res.status(400).send('email already exists')
     }
+    }
+    if(email===getUserByEmail(email,users)){
+      res.send("Account already exists")
     }
     users[user] = {
       id: user,
