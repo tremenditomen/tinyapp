@@ -158,7 +158,7 @@ app.get("/hello", (req, res) => {
   let user = getUserByEmail(email, users);
 
   if (!user) {
-    res.send("Error code: 403, Account not registerd");
+    res.send("Error code: 403,please check Email Adress or Password");
     return;
   } else if (bcrypt.compareSync(password, user.password)) {
     res.cookie("user_id", user.id);
